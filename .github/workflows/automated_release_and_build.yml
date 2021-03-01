@@ -49,18 +49,18 @@ jobs:
         run: >-
           docker build .
           --file Dockerfile
-          --tag docker.pkg.github.com/${IMAGE_NAME}:${GITHUB_REF##*/}
+          --tag docker.pkg.github.com/${IMAGE_NAME}:${{ env.RELEASE_TAG }}
       - name: Run mypy against the image
         run: >-
           docker run
           --network host
-          docker.pkg.github.com/${IMAGE_NAME}:${GITHUB_REF##*/}
+          docker.pkg.github.com/${IMAGE_NAME}:${{ env.RELEASE_TAG }}
           mypy .
       - name: Run tests against the image
         run: >-
           docker run
           --network host
-          docker.pkg.github.com/${IMAGE_NAME}:${GITHUB_REF##*/}
+          docker.pkg.github.com/${IMAGE_NAME}:${{ env.RELEASE_TAG }}
           python -m  pytest -vsx
       - name: Login to regitry
         run: >-
@@ -71,4 +71,4 @@ jobs:
       - name: Publish image with image tag being either develop/master/<tag_name>
         run: >-
           docker push
-          docker.pkg.github.com/${IMAGE_NAME}:${GITHUB_REF##*/}
+          docker.pkg.github.com/${IMAGE_NAME}:${{ env.RELEASE_TAG }}
