@@ -9,7 +9,7 @@ on:
       - "README.md"
     
 env:
-  IMAGE_NAME: "${{ github.repository }}/${{ github.event.repository.name }}"
+  IMAGE_NAME: "bentopping/${{ github.event.repository.name }}"
 
 jobs:
   build_and_test_job:
@@ -34,7 +34,7 @@ jobs:
         # Generate a release tag name in the format:
         # devel/YYYY-MM-DD/HHMMSS
         # Writes this out to the environment file for use downstream
-        run: echo "RELEASE_TAG=$([ ${GITHUB_REF##*/} = "develop" ] && echo "${GITHUB_REF##*/}/$(date +'%Y-%m-%d/%H%M%S')" || printf '%s\n' $(cat .release-version))" >> $GITHUB_ENV
+        run: echo "RELEASE_TAG=$([ ${GITHUB_REF##*/} = "develop" ] && echo "${GITHUB_REF##*/}-$(date +'%Y-%m-%d-%H%M%S')" || printf '%s\n' $(cat .release-version))" >> $GITHUB_ENV
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -49,18 +49,18 @@ jobs:
         run: >-
           docker build .
           --file Dockerfile
-          --tag docker.pkg.github.com/${IMAGE_NAME}:${GITHUB_REF##*/}
+          --tag docker.pkg.github.com/${IMAGE_NAME}:${{ env.RELEASE_TAG }
       - name: Run mypy against the image
         run: >-
           docker run
           --network host
-          docker.pkg.github.com/${IMAGE_NAME}:${GITHUB_REF##*/}
+          docker.pkg.github.com/${IMAGE_NAME}:${{ env.RELEASE_TAG }}
           mypy .
       - name: Run tests against the image
         run: >-
           docker run
           --network host
-          docker.pkg.github.com/${IMAGE_NAME}:${GITHUB_REF##*/}
+          docker.pkg.github.com/${IMAGE_NAME}:${{ env.RELEASE_TAG }}
           python -m  pytest -vsx
       - name: Login to regitry
         run: >-
@@ -71,4 +71,4 @@ jobs:
       - name: Publish image with image tag being either develop/master/<tag_name>
         run: >-
           docker push
-          docker.pkg.github.com/${IMAGE_NAME}:${GITHUB_REF##*/}
+          docker.pkg.github.com/${IMAGE_NAME}:${{ env.RELEASE_TAG }}
