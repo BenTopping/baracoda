@@ -49,7 +49,7 @@ jobs:
         run: >-
           docker build .
           --file Dockerfile
-          --tag docker.pkg.github.com/${IMAGE_NAME}:${{ env.RELEASE_TAG }
+          --tag docker.pkg.github.com/${IMAGE_NAME}:${{ env.RELEASE_TAG }}
       - name: Run mypy against the image
         run: >-
           docker run
