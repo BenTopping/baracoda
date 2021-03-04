@@ -102,3 +102,12 @@ To run mypy:
 - Run alembic and provide a comment to autogenerate the migration comparing with current database:
 
         alembic revision --autogenerate -m "Added account table"
+
+## Releases
+
+#### UAT
+On merging a pull request into develop, a release will be created with the tag/name `<branch>/<timestamp>`
+
+#### PROD
+Update `.release-version` with major/minor/patch. On merging a pull request into master, a release will be created with the release version as the tag/name 
+
