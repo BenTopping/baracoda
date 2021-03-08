@@ -23,4 +23,5 @@ jobs:
     
     - name: Compare release names
       run: |
-        if [ "${{ steps.last_release.outputs.tag_name }}" = "$(printf '%s\n' $(cat .release-version)_develop)" ] || [ "${{ steps.last_release.outputs.tag_name }}" = "$(printf '%s\n' $(cat .release-version))" ]; then exit 1; fi
+        if [ "${{ steps.last_release.outputs.tag_name }}" = "$(printf '%s\n' $(cat .release-version)_develop)" ] ||
+        [ "${{ steps.last_release.outputs.tag_name }}" = "$(printf '%s\n' $(cat .release-version))" ]; then exit 1; fi
